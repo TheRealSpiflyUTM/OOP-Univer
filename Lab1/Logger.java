@@ -14,7 +14,7 @@ public class Logger {
 
     private String name;
     static LogLevel level = LogLevel.INFO;
-    static String format = "[%l] %n: %m";
+    static String format = "[%l] %n:  %m | Random: %r";
     static private char msgSymbol = '%';
 
     Logger(String name){
@@ -38,7 +38,7 @@ public class Logger {
         Logger.format = format;
     }
 
-    public void log(LogLevel level, String message)  {
+    public void log( String message)  {
         
         String outputMsg = "";
         int msgLength = format.length();
@@ -52,7 +52,7 @@ public class Logger {
                 } 
                 // Logic follows after checking if it is the last i
 
-                String outputElement = checkForFormat(format.charAt( i+1 ) , message, level);
+                String outputElement = checkForFormat(format.charAt( i+1 ) , message);
                 outputMsg += outputElement;
                 i++;
 
@@ -139,7 +139,7 @@ public class Logger {
         String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         return currentTime;
     }
-    private String checkForFormat(char elem, String message, LogLevel meesageLevel){
+    private String checkForFormat(char elem, String message){
 
         String response = String.valueOf(msgSymbol + elem);
         if(elem == 't'){
@@ -152,11 +152,16 @@ public class Logger {
             response = name;
         }
         else if(elem == 'l'){
-            response = meesageLevel.toString();
+            response = level.toString();
         }
         else if(elem == 'r'){
             response = theRandomInformation();
         }
         return response;
     }
+/*
+    This lines are here for one reasone
+    To increse the number of lines
+    You can ignore them
+*/
 }

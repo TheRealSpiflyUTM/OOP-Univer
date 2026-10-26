@@ -25,23 +25,27 @@ public class Paranthesis {
                 // Check if there are equal left and right brackets
                 if(leftOpenCounter > rightOpenCounter){
                     response = "Invalid Imput, there are more ) then ( at the " + String.valueOf(i+1) + "charcher";
-                    logger.log( LogLevel.ERROR, response);
+                    Logger.setLevel(LogLevel.ERROR);
+                    logger.log(response);
                     return false;
                 }
             }
             else{
-                logger.log(LogLevel.ERROR, "There is an invalid character");
+                Logger.setLevel(LogLevel.ERROR);
+                logger.log("There is an invalid character at possition: " + String.valueOf(i) + " " + message.charAt(i) );
                 return false;
             }
         }
         if(rightOpenCounter == leftOpenCounter){
             boolResponse = true;
             response = "The action was done succsefull";
-            logger.log(LogLevel.INFO, response);
+            Logger.setLevel(LogLevel.INFO);
+            logger.log(response);
         }
         if(rightOpenCounter > leftOpenCounter){
             response = "There are more ( then )";
-            logger.log(LogLevel.ERROR, response);
+            Logger.setLevel(LogLevel.ERROR);
+            logger.log( response);
         }
 
         return boolResponse;
