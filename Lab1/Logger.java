@@ -38,8 +38,12 @@ public class Logger {
         Logger.format = format;
     }
 
-    public void log( String message)  {
+    public void log(LogLevel msgLevel, String message)  {
         
+        if(msgLevel.ordinal() < level.ordinal()){
+            return ;
+        }
+
         String outputMsg = "";
         int msgLength = format.length();
         for(int i = 0 ; i < msgLength ; i++){
@@ -52,7 +56,7 @@ public class Logger {
                 } 
                 // Logic follows after checking if it is the last i
 
-                String outputElement = checkForFormat(format.charAt( i+1 ) , message);
+                String outputElement = checkForFormat(msgLevel, format.charAt(i+1) , message);
                 outputMsg += outputElement;
                 i++;
 
@@ -116,18 +120,18 @@ public class Logger {
         return returnRandomFromPrases(prases);
     }
 
-    private String theRandomInformation(){
+    private String theRandomInformation(LogLevel msgLevel){
         String response = "";
-        if(level == LogLevel.TRACE){
+        if     (msgLevel == LogLevel.TRACE){
             response = returnRandomTrace();
         }
-        else if(level == LogLevel.INFO){
+        else if(msgLevel == LogLevel.INFO){
             response = returnRandomInfo();
         }
-        else if(level == LogLevel.WARN){
+        else if(msgLevel == LogLevel.WARN){
             response = returnRandomWarn();
         }
-        else if(level == LogLevel.ERROR){
+        else if(msgLevel == LogLevel.ERROR){
             response = returnRandomError();
         }
         return response;
@@ -139,9 +143,9 @@ public class Logger {
         String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         return currentTime;
     }
-    private String checkForFormat(char elem, String message){
+    private String checkForFormat(LogLevel msgLevel, char elem, String message){
 
-        String response = String.valueOf(msgSymbol + elem);
+        String response = "" + msgSymbol + elem;
         if(elem == 't'){
             response = getCurrentTimne();
         }
@@ -152,16 +156,12 @@ public class Logger {
             response = name;
         }
         else if(elem == 'l'){
-            response = level.toString();
+            response = msgLevel.toString();
         }
         else if(elem == 'r'){
-            response = theRandomInformation();
+            response = theRandomInformation(msgLevel);
         }
         return response;
     }
-/*
-    This lines are here for one reasone
-    To increse the number of lines
-    You can ignore them
-*/
+    // This line has a reasone, check the number of lines 
 }

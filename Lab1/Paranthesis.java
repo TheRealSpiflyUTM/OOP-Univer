@@ -7,15 +7,18 @@ public class Paranthesis {
 
     public boolean getAnswere(){
         boolean boolResponse = false; 
-        String response = "The action was done unsucsesfull";
-
         Logger logger = new Logger("Parentheses");
 
         int leftOpenCounter = 0; // )
         int rightOpenCounter = 0; // (
 
         int msgLength = message.length();
+        logger.log(LogLevel.WARN , "Starting the verification message in the pharantheses");
+
         for(int i = 0 ; i < msgLength ; i++){
+
+            logger.log(LogLevel.WARN , "The " + i + " itteration");
+
             if(message.charAt(i) == '('){
                 rightOpenCounter += 1;
             }
@@ -23,29 +26,23 @@ public class Paranthesis {
                 leftOpenCounter += 1;
 
                 // Check if there are equal left and right brackets
+                logger.log(LogLevel.WARN , "Checking if nr.( > nr.)");
                 if(leftOpenCounter > rightOpenCounter){
-                    response = "Invalid Imput, there are more ) then ( at the " + String.valueOf(i+1) + "charcher";
-                    Logger.setLevel(LogLevel.ERROR);
-                    logger.log(response);
+                    logger.log(LogLevel.ERROR , "Invalid Imput, there are more ) then ( at the " + String.valueOf(i+1) + "charcher");
                     return false;
                 }
             }
             else{
-                Logger.setLevel(LogLevel.ERROR);
-                logger.log("There is an invalid character at possition: " + String.valueOf(i) + " " + message.charAt(i) );
+                logger.log(LogLevel.ERROR , "There is an invalid character at possition: " + String.valueOf(i) + " " + message.charAt(i) );
                 return false;
             }
         }
         if(rightOpenCounter == leftOpenCounter){
             boolResponse = true;
-            response = "The action was done succsefull";
-            Logger.setLevel(LogLevel.INFO);
-            logger.log(response);
+            logger.log(LogLevel.INFO, "The action was done succsefull");
         }
         if(rightOpenCounter > leftOpenCounter){
-            response = "There are more ( then )";
-            Logger.setLevel(LogLevel.ERROR);
-            logger.log( response);
+            logger.log( LogLevel.ERROR , "There are more ( then )");
         }
 
         return boolResponse;
