@@ -17,7 +17,7 @@ public class Paranthesis {
 
         for(int i = 0 ; i < msgLength ; i++){
 
-            logger.log(LogLevel.WARN , "The " + i + " itteration");
+            logger.log(LogLevel.TRACE , "The " + i + " itteration");
 
             if(message.charAt(i) == '('){
                 rightOpenCounter += 1;
