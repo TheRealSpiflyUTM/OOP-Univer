@@ -17,7 +17,7 @@ public class Logger {
     static String format = "[%l] %n:  %m | Random: %r";
     static private char msgSymbol = '%';
 
-    Logger(String name){
+    Logger(String name ){
         this.name = name;
     }
     // Reseters
