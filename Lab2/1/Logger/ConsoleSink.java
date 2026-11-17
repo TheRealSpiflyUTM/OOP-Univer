@@ -2,7 +2,7 @@ package Logger;
 
 public class ConsoleSink {
     
-    public void write(String line) {
+    public void write(StringBuilder line) {
         System.out.println(line);
     }
 }

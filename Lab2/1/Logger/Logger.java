@@ -23,9 +23,9 @@ public class Logger {
         Logger.level = level;
     }
 
-    public void log(LogLevel msgLevel, String message)  {
+    public void log(LogLevel msgLevel, String message , Object... args)  {
         
         if(msgLevel.ordinal() < level.ordinal()) return ;
-        sink.write(formatter.getFormatMessage(level , name , message));
+        sink.write(formatter.getFormatMessage(level , name , message , args));
     }
 }
