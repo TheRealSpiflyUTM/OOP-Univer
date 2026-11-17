@@ -20,7 +20,7 @@ public class Formatter {
         this.format = format;
     }
 
-    public String getFormat(LogLevel msgLevel, String name, String message){
+    public String getFormatMessage(LogLevel msgLevel, String name, String message){
         String outputMsg = "";
         int msgLength = format.length();
         for(int i = 0 ; i < msgLength ; i++){
