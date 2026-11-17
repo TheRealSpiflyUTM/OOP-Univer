@@ -1,3 +1,6 @@
+import Logger.LogLevel;
+import Logger.Logger;
+
 public class Paranthesis {
     private String message;
 
@@ -28,7 +31,7 @@ public class Paranthesis {
                 // Check if there are equal left and right brackets
                 logger.log(LogLevel.WARN , "Checking if nr.( > nr.)");
                 if(leftOpenCounter > rightOpenCounter){
-                    logger.log(LogLevel.ERROR , "Invalid Imput, there are more ) then ( at the " + String.valueOf(i+1) + "charcher");
+                    logger.log(LogLevel.ERROR , "Invalid Imput, there are more ')' then '(' at the " + String.valueOf(i+1) + "charcher");
                     return false;
                 }
             }
