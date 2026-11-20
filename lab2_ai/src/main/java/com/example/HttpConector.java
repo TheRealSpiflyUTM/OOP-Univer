@@ -22,17 +22,33 @@ public class HttpConector{
 
         return proceedFromBuilder(builder);
     }
+    
     public static HttpResponse<String> sendMessage(String model , String message){
         JSONObject body = new JSONObject();
         body.put("model", model);
-        body.put("type", "text");
+        // body.put("type", "text");
         body.put("input", message);
 
         HttpRequest.Builder builder = HttpRequest.newBuilder()
         .uri(URI.create(Values.APIURL + chatAIURL))
+        .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
         return proceedFromBuilder(builder);
     }
+    public static HttpResponse<String> sendMessage(String model , String message , String masterPropmt){
+        JSONObject body = new JSONObject();
+        body.put("model", model);
+        body.put("system_prompt", masterPropmt);
+        // body.put("type", "text");
+        body.put("input", message);
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+        .uri(URI.create(Values.APIURL + chatAIURL))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
+        return proceedFromBuilder(builder);
+    }
+
 
     private static HttpResponse<String> proceedFromBuilder(HttpRequest.Builder builder) {
         if(!Values.APIKEY.isEmpty()){

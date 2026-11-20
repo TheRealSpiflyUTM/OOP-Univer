@@ -39,4 +39,9 @@ public class AI {
         };
         return avaliableModels.getJSONObject(0).getString("key");
     }
+
+    static String getMessage(String body){
+        return new JSONObject(body).getJSONArray("output").getJSONObject(0).getString("content");
+
+    }
 }
