@@ -23,6 +23,7 @@ public class HttpConector{
         return proceedFromBuilder(builder);
     }
     
+    
     public static HttpResponse<String> sendMessage(String model , String message){
         JSONObject body = new JSONObject();
         body.put("model", model);

@@ -69,9 +69,13 @@ public class Agent {
             //#endregion
 
             log.log(LogLevel.INFO, "Sending your prayer to the GOD");;
-            respnoseFromAI =  HttpConector.sendMessage(
+            respnoseFromAI = 
+            HttpConector
+            .sendMessage(
                 model, 
-                "Resume: " + memory.getResumeString() + "\n" + "Memory: " + memory.getMemoryString() + "Curent message: " + message, 
+                "Resume: " + memory.getResumeString() + "\n" + 
+                "Memory: " + memory.getMemoryString() + "\n" +
+                "Curent message: " + message, 
                 godMasterPromp
             );
 
@@ -85,8 +89,11 @@ public class Agent {
             String AIMessage = AI.getMessage(respnoseFromAI.body());
             System.out.println("God: " + AIMessage);
             
-            memory.add("Human Question: " + message);
-            memory.add("Ai Response: " + AIMessage);
+            memory
+            .addWithResume(
+                "Human Question: " + message + "\n" + 
+                "Ai Response: " + AIMessage
+            );
         }
     }
 
