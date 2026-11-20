@@ -6,9 +6,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import org.json.JSONObject;
+
 public class HttpConector{
 
     static String modelsAIURL = "/api/v1/models";  
+    static String chatAIURL = "/api/v1/chat";  
     static HttpClient client = HttpClient.newHttpClient();
 
 
@@ -19,10 +22,15 @@ public class HttpConector{
 
         return proceedFromBuilder(builder);
     }
-    public static HttpResponse<String> sendMessage(String message){
+    public static HttpResponse<String> sendMessage(String model , String message){
+        JSONObject body = new JSONObject();
+        body.put("model", model);
+        body.put("type", "text");
+        body.put("input", message);
+
         HttpRequest.Builder builder = HttpRequest.newBuilder()
-        .uri(URI.create(Values.APIURL + modelsAIURL))
-        .POST(HttpRequest.BodyPublishers.ofString(message));
+        .uri(URI.create(Values.APIURL + chatAIURL))
+        .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
         return proceedFromBuilder(builder);
     }
 
