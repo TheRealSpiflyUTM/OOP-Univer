@@ -1,3 +1,20 @@
+# Build output
+target/
+out/
 *.class
+*.jar
+*.log
 
+# Secrets
 API_KEY.env
+*.env
+
+# VS Code
+.vscode/
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml

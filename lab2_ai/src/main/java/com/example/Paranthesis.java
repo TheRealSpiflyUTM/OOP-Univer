@@ -1,5 +1,7 @@
-import Logger.LogLevel;
-import Logger.Logger;
+package com.example;
+
+import com.example.Logger.LogLevel;
+import com.example.Logger.Logger;
 
 public class Paranthesis {
     private String message;

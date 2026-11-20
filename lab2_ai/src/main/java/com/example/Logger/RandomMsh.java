@@ -1,4 +1,4 @@
-package Logger;
+package com.example.Logger;
 
 import java.util.Random;
 

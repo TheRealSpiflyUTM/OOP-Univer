@@ -1,3 +1,5 @@
+package com.example;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,7 +34,7 @@ public class HttpConector{
         try{
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("Status: " + response.statusCode());
-            System.out.println(response.body());
+            // System.out.println(response.body());
             return response;
         } catch(IOException | InterruptedException e){
             e.printStackTrace();

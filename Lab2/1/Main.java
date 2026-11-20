@@ -13,14 +13,14 @@ public class Main {
         // if(!lvlInput.isEmpty()){
         //     try{
         //         selLevel = LogLevel.valueOf(lvlInput);
-        //     }catch (Error e){
+        //     }catch S(Error e){
         //         System.out.println("Invalid level, using TRACE");
         //     }
         // }
 
         // Logger.setLevel(selLevel);
 
-        // System.out.print("Enter parentheses: ");
+        // System.out.print("Enter parentheses: ");S
         // String input = scanner.nextLine();  
         
         // scanner.close();

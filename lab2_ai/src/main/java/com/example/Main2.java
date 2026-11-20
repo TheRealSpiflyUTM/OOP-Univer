@@ -1,6 +1,12 @@
+package com.example;
+
 import java.io.File;                  
-import java.io.FileNotFoundException; 
+import java.io.FileNotFoundException;
+import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Scanner;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class Main2 {
     public static void main(String[] args) {
@@ -10,20 +16,27 @@ public class Main2 {
         // read the API_KEY.env file if its not created create it
         getConstFromFile(myFile);
 
-        HttpConector.getModels();
-    }
-    
-    // file reader
+        HttpResponse<String> response = HttpConector.getModels();
+        if(response == null || response.statusCode() != 200){
+            System.out.println("Could not get models");
+            return;
+        };
+        JSONObject obj = new JSONObject(response.body());
+        System.out.println(obj);
+
+    }    // file reader
     static void getConstFromFile(File file){
         try(Scanner myScanner = new Scanner(file)){
             while(myScanner.hasNextLine()){
                 String data = myScanner.nextLine().trim();
+
                 if(data.isEmpty() || data.startsWith("#")) continue;
                 String[] parts = data.split("=" , 2);
-                if(parts.length < 2) continue;
 
+                if(parts.length < 2) continue;
                 String name = parts[0].trim();
                 String value = parts[1].trim();
+
                 if(name.equals("LLM_URL")){
                     Values.APIURL = value;
                 }
