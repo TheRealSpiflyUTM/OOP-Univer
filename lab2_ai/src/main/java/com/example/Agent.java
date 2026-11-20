@@ -71,7 +71,7 @@ public class Agent {
             log.log(LogLevel.INFO, "Sending your prayer to the GOD");;
             respnoseFromAI =  HttpConector.sendMessage(
                 model, 
-                "Resume: " + memory.getResume() + "\n" + "Memory: " + memory.getMemoryString() + "Curent message: " + message, 
+                "Resume: " + memory.getResumeString() + "\n" + "Memory: " + memory.getMemoryString() + "Curent message: " + message, 
                 godMasterPromp
             );
 

@@ -29,7 +29,7 @@ public class Memory {
     public Memory(int capacity){
         this.capacity = capacity;
     }
-
+    // Adders
     public void add(String newMemory){
         
         if(messages.size() > capacity){
@@ -42,9 +42,17 @@ public class Memory {
             messages.removeFirst();
             messages.removeFirst();
         }
-        
+
         log.log(LogLevel.INFO, "Adding new memory");
         messages.addLast(newMemory);
+    }
+    public void addWithResume(String newMemory){
+
+        if(messages.size() > capacity){
+            log.log(LogLevel.INFO , "Creating a resume on the {0} capacity" , new Object[]{capacity});
+            createResume();
+            messages.clear();
+        }
     }
 
     public String getMemoryString(){
@@ -57,11 +65,12 @@ public class Memory {
     }
 
     public void createResume(){
-        HttpResponse<String> response = HttpConector.sendMessage(getMemoryString() , resumePrompt );
-        messages.clear();
+        HttpResponse<String> response = HttpConector.sendMessage("Resume: " + resume.toString() + "\n" + "New Memory: " + getMemoryString()  , resumePrompt );
         resume = new StringBuilder(response.body());
     }
-    public String getResume(){
+    
+    public String getResumeString(){
         return resume.toString();
     }
+
 }
