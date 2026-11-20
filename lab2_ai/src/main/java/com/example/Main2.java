@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 import org.json.JSONObject;
 import org.json.JSONArray;
-
 public class Main2 {
     public static void main(String[] args) {
 
@@ -21,10 +20,12 @@ public class Main2 {
             System.out.println("Could not get models");
             return;
         };
-        JSONObject obj = new JSONObject(response.body());
-        System.out.println(obj);
-
-    }    // file reader
+        // System.out.println(response.body());
+        List<String> avaliableModels = AI.getAvaliableModels(response.body());
+        AI.printAvaliableModels(avaliableModels);
+    }    
+    
+    // file reader
     static void getConstFromFile(File file){
         try(Scanner myScanner = new Scanner(file)){
             while(myScanner.hasNextLine()){
