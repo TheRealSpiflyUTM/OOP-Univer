@@ -14,7 +14,7 @@ public class Agent {
     private Logger log;
     private HttpResponse<String> modelsResponse;
     private String model;
-
+    private final Memory memory = Memory.tier1();
     static final String godMasterPromp = 
         """
         - You have the personality of a GOD
@@ -48,6 +48,7 @@ public class Agent {
 
         model = AI.getModel(avaliableModels , log);
         if(model == null) return ;
+        Memory.setModel(model);
         
     }
 
@@ -56,50 +57,60 @@ public class Agent {
         String message = "s" ;
         System.out.println("God: Whats on your mind");
         HttpResponse<String> respnoseFromAI = null;
-        Memory memory = Memory.tier1();
         while(true){
 
             System.out.print("Monkey: ");
             message = in.nextLine().trim();
 
-            //#region Exit Cheker
+            //#region message Cheker
             String lowered = message.toLowerCase();
             if(lowered.equals("q") || lowered.equals("e") || lowered.equals("quit") || lowered.equals("exit")) break;
             if(lowered.isEmpty()) continue;
             //#endregion
 
-            log.log(LogLevel.INFO, "Sending your prayer to the GOD");;
-            respnoseFromAI = 
-            HttpConector
-            .sendMessage(
-                model, 
-                "Resume: " + memory.getResumeString() + "\n" + 
-                "Memory: " + memory.getMemoryString() + "\n" +
-                "Curent message: " + message, 
-                godMasterPromp
-            );
+            respnoseFromAI = getResponseFromAI(message);
 
+            //#region respnoseFromAI Checker
             if(respnoseFromAI == null || respnoseFromAI.statusCode() != 200){
                 log.log(LogLevel.ERROR, "No ai response womp womp");
                 System.out.println("God: Some idiot doesn't know how to code, try again");
                 continue;
             }
+            //#endregion
             
-            // System.out.println(respnoseFromAI.body().getClass());
-            String AIMessage = AI.getMessage(respnoseFromAI.body());
+            String AIMessage = getAiMessage(respnoseFromAI);
             System.out.println("God: " + AIMessage);
             
-            memory
-            .addWithResume(
-                "Human Question: " + message + "\n" + 
-                "Ai Response: " + AIMessage
-            );
+            addToMemory(message, AIMessage);
         }
+    }
+    
+    private String getAiMessage(HttpResponse<String> respnoseFromAI){
+        return AI.getMessage(respnoseFromAI.body());
+    }
+    private void addToMemory(String humanMessage , String AIMessage){
+        memory.addWithResume(
+            "Human Question: " + humanMessage + "\n" + 
+            "Ai Response: " + AIMessage
+        );
+    }
+    private HttpResponse<String> getResponseFromAI(String message){
+        log.log(LogLevel.INFO, "Sending your prayer to the GOD");;
+        return HttpConector.sendMessage(
+            model, 
+            "Resume: " + memory.getResumeString() + "\n" + 
+            "Memory: " + memory.getMemoryString() + "\n" +
+            "Curent message: " + message, 
+            godMasterPromp
+        );
+    }
+
+    public String getModel(){
+        return model;
     }
 
 
-
-
+    // Helper Functions
 
     static void getConstFromFile(File file){
         try(Scanner myScanner = new Scanner(file)){

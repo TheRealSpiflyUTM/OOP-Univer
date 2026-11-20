@@ -15,10 +15,15 @@ public class Memory {
     private int capacity;
     private StringBuilder resume = new StringBuilder("");
     private static Logger log = new Logger("Memory");
+    private static String model;  
 
-    public static Memory tier1() {return new Memory(5);}
-    public static Memory tier2() {return new Memory(10);}
-    public static Memory tier3() {return new Memory(15);}
+    public static final int TIER1_SIZE = 2;
+    public static final int TIER2_SIZE = 4;
+    public static final int TIER3_SIZE = 6;
+
+    public static Memory tier1() {return new Memory(TIER1_SIZE);}
+    public static Memory tier2() {return new Memory(TIER2_SIZE);}
+    public static Memory tier3() {return new Memory(TIER3_SIZE);}
 
     private static String resumePrompt = 
     """
@@ -26,19 +31,19 @@ public class Memory {
     - The resume limit is 200 - 250 words never go above this limit, bellow is accetable
 
     """;
+
     public Memory(int capacity){
         this.capacity = capacity;
     }
     // Adders
-    public void add(String newMemory){
-        
-        if(messages.size() > capacity){
+    public void add(String newMemory){   
+        if(messages.size() > capacity - 1){
             log.log(LogLevel.INFO, "Removing from memory");            
             messages.removeFirst();
             messages.removeFirst();
         }
         
-        while(messages.size() > capacity){
+        while(messages.size() > capacity - 1){
             messages.removeFirst();
             messages.removeFirst();
         }
@@ -47,12 +52,13 @@ public class Memory {
         messages.addLast(newMemory);
     }
     public void addWithResume(String newMemory){
-
-        if(messages.size() > capacity){
+        if(messages.size() > capacity - 1 ){
             log.log(LogLevel.INFO , "Creating a resume on the {0} capacity" , new Object[]{capacity});
             createResume();
             messages.clear();
         }
+        log.log(LogLevel.INFO, "Adding new memory");
+        messages.addLast(newMemory);
     }
 
     public String getMemoryString(){
@@ -65,12 +71,16 @@ public class Memory {
     }
 
     public void createResume(){
-        HttpResponse<String> response = HttpConector.sendMessage("Resume: " + resume.toString() + "\n" + "New Memory: " + getMemoryString()  , resumePrompt );
-        resume = new StringBuilder(response.body());
+        HttpResponse<String> response = HttpConector.sendMessage(model ,"Resume: " + resume.toString() + "\n" + "New Memory: " + getMemoryString()  , resumePrompt );
+        resume = new StringBuilder(AI.getMessage(response.body()));
     }
     
     public String getResumeString(){
         return resume.toString();
     }
 
+
+    public static void setModel(String tempModel){
+        model = tempModel;
+    }
 }
