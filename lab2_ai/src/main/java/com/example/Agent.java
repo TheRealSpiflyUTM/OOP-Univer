@@ -6,6 +6,7 @@ import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.example.Logger.LogLevel;
 import com.example.Logger.Logger;
@@ -17,14 +18,27 @@ public class Agent {
     private final Memory memory = Memory.tier1();
     static final String godMasterPromp = 
         """
-        - You have the personality of a GOD
-        - You are speaking with a monkey he doesn't know a lot of stuff so you need to explain him to undestand
-        - You must represent a diety having the dielect and final words of one
-        - Every message you explain must be met at the end with "Did you get that monkey?"
-        - Dont use the md or lateh format just plain text.
-        - Use at least 2 in the whole response not one afther anothe
-        - You respond just in english no other language is allowed with the exception of terms from other languages
-        - The maximum ammount of characters for your response shouldn't be bigger then 200
+            You are a GOD speaking with a monkey (the user). The monkey doesn't know much, so explain things simply.
+
+            PERSONALITY
+            - Speak with the dialect and final words of a deity.
+            - Explain things so a monkey can understand them.
+            - Always end the message text with: Did you get that monkey?
+
+            MESSAGE RULES
+            - English only, except for terms borrowed from other languages.
+            - Plain text only. No markdown, no LaTeX, no emojis.
+            - One single paragraph. No numbering, no "message 1 / message 2", no line breaks.
+            - Maximum 200 characters, including the final question.
+            - Never use double quotes inside the message, use single quotes instead.
+
+            TOOLS
+            - "tools" is a list of tools you want to call. Use only tools that are given to you in this prompt.
+            - If no tools are given, or you don't need one, return an empty list: []
+
+            OUTPUT FORMAT
+            Reply with exactly ONE JSON object and nothing else. No text before or after it, no code fences, no second object. Use exactly these two keys:
+            {"message": "<your final message as a string>", "tools": []}
         """;
 
     public Agent(File myFile){
@@ -34,7 +48,7 @@ public class Agent {
         getConstFromFile(myFile);
         log = new Logger("Cheker");
 
-        log.log(LogLevel.INFO, "Trying to get a response");
+        log.log(LogLevel.TRACE, "Trying to get a response");
         modelsResponse = HttpConector.getModels();
         
         if(modelsResponse == null || modelsResponse.statusCode() != 200){
@@ -49,7 +63,7 @@ public class Agent {
         model = AI.getModel(avaliableModels , log);
         if(model == null) return ;
         Memory.setModel(model);
-        
+        System.out.println("--------------------------------------------------------------------------------------");
     }
 
     public void chat(){
@@ -78,6 +92,7 @@ public class Agent {
             }
             //#endregion
             
+            printResponseStats(respnoseFromAI);
             String AIMessage = getAiMessage(respnoseFromAI);
             System.out.println("God: " + AIMessage);
             
@@ -86,8 +101,10 @@ public class Agent {
     }
     
     private String getAiMessage(HttpResponse<String> respnoseFromAI){
-        return AI.getMessage(respnoseFromAI.body());
+        return new JSONObject(AI.getMessage(respnoseFromAI.body())).getString("message");
+        
     }
+
     private void addToMemory(String humanMessage , String AIMessage){
         memory.addWithResume(
             "Human Question: " + humanMessage + "\n" + 
@@ -95,7 +112,7 @@ public class Agent {
         );
     }
     private HttpResponse<String> getResponseFromAI(String message){
-        log.log(LogLevel.INFO, "Sending your prayer to the GOD");;
+        log.log(LogLevel.TRACE, "Sending your prayer to the GOD");;
         return HttpConector.sendMessage(
             model, 
             "Resume: " + memory.getResumeString() + "\n" + 
@@ -105,6 +122,35 @@ public class Agent {
         );
     }
 
+
+    private void printResponseStats(HttpResponse<String> response){
+        JSONObject body = new JSONObject(response.body()).getJSONObject("stats");
+        // System.out.println(body);
+        System.out.println("--------------------------------------------------------------------------------------");
+
+        log.log(
+            LogLevel.INFO, 
+            """
+            \nInput Tokens: {0}
+            Total Output Tokens {1}
+            Reasoning Output Tokens {2}
+            Tokens Per Second {3}
+            Time For The First Token Reads {4}
+            """, 
+            new Object[]{
+                body.getInt("input_tokens"),
+                body.getInt("total_output_tokens"),
+                body.getDouble("reasoning_output_tokens"),
+                body.getDouble("tokens_per_second"),
+                body.getDouble("time_to_first_token_seconds"),
+            }
+        );
+
+        System.out.println("--------------------------------------------------------------------------------------");
+
+    }
+    
+    
     public String getModel(){
         return model;
     }

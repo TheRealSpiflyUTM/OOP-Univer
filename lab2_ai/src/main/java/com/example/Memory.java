@@ -1,11 +1,8 @@
 package com.example;
 
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 
 import com.example.Logger.LogLevel;
 import com.example.Logger.Logger;
@@ -38,7 +35,7 @@ public class Memory {
     // Adders
     public void add(String newMemory){   
         if(messages.size() > capacity - 1){
-            log.log(LogLevel.INFO, "Removing from memory");            
+            log.log(LogLevel.TRACE, "Removing from memory");            
             messages.removeFirst();
             messages.removeFirst();
         }
@@ -48,16 +45,16 @@ public class Memory {
             messages.removeFirst();
         }
 
-        log.log(LogLevel.INFO, "Adding new memory");
+        log.log(LogLevel.TRACE, "Adding new memory");
         messages.addLast(newMemory);
     }
     public void addWithResume(String newMemory){
         if(messages.size() > capacity - 1 ){
-            log.log(LogLevel.INFO , "Creating a resume on the {0} capacity" , new Object[]{capacity});
+            log.log(LogLevel.TRACE , "Creating a resume on the {0} capacity" , new Object[]{capacity});
             createResume();
             messages.clear();
         }
-        log.log(LogLevel.INFO, "Adding new memory");
+        log.log(LogLevel.TRACE, "Adding new memory");
         messages.addLast(newMemory);
     }
 
