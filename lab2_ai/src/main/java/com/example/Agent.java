@@ -15,35 +15,14 @@ public class Agent {
     private Logger log;
     private HttpResponse<String> modelsResponse;
     private String model;
-    private final Memory memory = Memory.tier1();
-    static final String godMasterPromp = 
-        """
-            You are a GOD speaking with a monkey (the user). The monkey doesn't know much, so explain things simply.
+    private final Memory memory;
+    private final String masterPrompt;
 
-            PERSONALITY
-            - Speak with the dialect and final words of a deity.
-            - Explain things so a monkey can understand them.
-            - Always end the message text with: Did you get that monkey?
+    public Agent(File myFile , Memory memory, String masterPrompt){
 
-            MESSAGE RULES
-            - English only, except for terms borrowed from other languages.
-            - Plain text only. No markdown, no LaTeX, no emojis.
-            - One single paragraph. No numbering, no "message 1 / message 2", no line breaks.
-            - Maximum 200 characters, including the final question.
-            - Never use double quotes inside the message, use single quotes instead.
-
-            TOOLS
-            - "tools" is a list of tools you want to call. Use only tools that are given to you in this prompt.
-            - If no tools are given, or you don't need one, return an empty list: []
-
-            OUTPUT FORMAT
-            Reply with exactly ONE JSON object and nothing else. No text before or after it, no code fences, no second object. Use exactly these two keys:
-            {"message": "<your final message as a string>", "tools": []}
-        """;
-
-    public Agent(File myFile){
         System.setOut(new java.io.PrintStream(System.out, true, java.nio.charset.StandardCharsets.UTF_8));
-
+        this.memory = memory;
+        this.masterPrompt = masterPrompt;
         // read the API_KEY.env file if its not created create it
         getConstFromFile(myFile);
         log = new Logger("Cheker");
@@ -101,8 +80,23 @@ public class Agent {
     }
     
     private String getAiMessage(HttpResponse<String> respnoseFromAI){
-        return new JSONObject(AI.getMessage(respnoseFromAI.body())).getString("message");
-        
+        JSONObject reply = new JSONObject(AI.getMessage(respnoseFromAI.body()));
+        String message = reply.getString("message");
+        JSONArray toolCalls = reply.getJSONArray("tools");
+
+        for(int i = 0 ; i < toolCalls.length() ; i++){
+            JSONObject toolCall = toolCalls.getJSONObject(i);
+            
+            String name = toolCall.getString("name");
+            String id = toolCall.getString("id");
+            JSONObject args = toolCall.optJSONObject("args");
+            if(args == null) args = new JSONObject();
+            
+            String result = Tools.run(name, args);
+            message = message.replace("{" + id + "}" , result);
+        }
+
+        return message;
     }
 
     private void addToMemory(String humanMessage , String AIMessage){
@@ -118,7 +112,7 @@ public class Agent {
             "Resume: " + memory.getResumeString() + "\n" + 
             "Memory: " + memory.getMemoryString() + "\n" +
             "Curent message: " + message, 
-            godMasterPromp
+            masterPrompt
         );
     }
 

@@ -4,13 +4,8 @@ import com.example.Logger.LogLevel;
 import com.example.Logger.Logger;
 
 public class Paranthesis {
-    private String message;
 
-    Paranthesis(String message){
-        this.message = message;
-    }
-
-    public boolean getAnswere(){
+    public static boolean getAnswere(String message){
         boolean boolResponse = false; 
         Logger logger = new Logger("Parentheses");
 

@@ -35,13 +35,11 @@ public class Memory {
     // Adders
     public void add(String newMemory){   
         if(messages.size() > capacity - 1){
-            log.log(LogLevel.TRACE, "Removing from memory");            
-            messages.removeFirst();
+            log.log(LogLevel.WARN, "Removing from memory");            
             messages.removeFirst();
         }
         
         while(messages.size() > capacity - 1){
-            messages.removeFirst();
             messages.removeFirst();
         }
 
@@ -50,7 +48,7 @@ public class Memory {
     }
     public void addWithResume(String newMemory){
         if(messages.size() > capacity - 1 ){
-            log.log(LogLevel.TRACE , "Creating a resume on the {0} capacity" , new Object[]{capacity});
+            log.log(LogLevel.WARN , "Creating a resume on the {0} capacity, deleting all other messages" , new Object[]{capacity});
             createResume();
             messages.clear();
         }

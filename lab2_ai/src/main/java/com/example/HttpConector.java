@@ -1,15 +1,19 @@
 package com.example;
 
 import java.io.IOException;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import  com.example.Logger.LogLevel;
+import  com.example.Logger.Logger;
+
 import org.json.JSONObject;
 
 public class HttpConector{
-
+    static private Logger log = new Logger("HttpConnector");
     static String modelsAIURL = "/api/v1/models";  
     static String chatAIURL = "/api/v1/chat";  
     static HttpClient client = HttpClient.newHttpClient();
@@ -58,7 +62,7 @@ public class HttpConector{
         HttpRequest request = builder.build();
         try{
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Status: " + response.statusCode());
+            log.log(LogLevel.INFO, "Status: " + response.statusCode());
             // System.out.println(response.body());
             return response;
         } catch(IOException | InterruptedException e){
