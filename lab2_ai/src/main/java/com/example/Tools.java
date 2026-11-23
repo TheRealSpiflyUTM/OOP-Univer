@@ -35,7 +35,6 @@ public class Tools {
     
     public static String run(String name , JSONObject args){
         Function<JSONObject , String> tool = toolMap.get(name);
-        
         log.log(LogLevel.TRACE, "Checking for tools ");
         if(tool == null ) return  "[unknown tool: " + name + "]";
         try{
