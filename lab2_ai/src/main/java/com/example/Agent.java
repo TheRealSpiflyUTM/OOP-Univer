@@ -17,6 +17,8 @@ public class Agent {
     private String model;
     private final Memory memory;
     private final String masterPrompt;
+    private JSONArray reasoningArray;
+    private String reasoningLevel;
 
     public Agent(File myFile , Memory memory, String masterPrompt){
 
@@ -36,16 +38,26 @@ public class Agent {
         };
 
         // System.out.println(modelsResponse.body());
+        // System.out.println(modelsResponse.body());
         JSONArray avaliableModels = AI.getAvaliableModels(modelsResponse.body());
         AI.printAvaliableModels(avaliableModels);
 
+        reasoningArray = AI.getReasoningOptions(new JSONObject(modelsResponse.body()));
         model = AI.getModel(avaliableModels , log);
-        if(model == null) return ;
+
+        if(model == null) {
+            log.log(LogLevel.ERROR, "No models loaded");
+            return ;
+        }
         Memory.setModel(model);
         System.out.println("--------------------------------------------------------------------------------------");
     }
 
     public void chat(){
+        if (reasoningArray != null && reasoningArray.length() > 0) {
+            reasoningLevel = reasoningArray.getString(0); // "off"
+        }
+
         Scanner in = new Scanner(System.in);
         String message = "s" ;
         System.out.println("God: Whats on your mind");
@@ -112,7 +124,8 @@ public class Agent {
             "Resume: " + memory.getResumeString() + "\n" + 
             "Memory: " + memory.getMemoryString() + "\n" +
             "Curent message: " + message, 
-            masterPrompt
+            masterPrompt,
+            reasoningLevel
         );
     }
 

@@ -40,4 +40,12 @@ public class AI {
         return new JSONObject(body).getJSONArray("output").getJSONObject(0).getString("content");
 
     }
+    static JSONArray getReasoningOptions(JSONObject model) {
+        JSONObject caps = model.optJSONObject("capabilities");
+        
+        if (caps == null) return null;
+
+        JSONObject r = caps.optJSONObject("reasoning");
+        return r == null ? null : r.optJSONArray("allowed_options"); // null = no reasoning
+    }
 }

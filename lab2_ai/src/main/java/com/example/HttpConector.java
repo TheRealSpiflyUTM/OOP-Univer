@@ -40,11 +40,13 @@ public class HttpConector{
         .POST(HttpRequest.BodyPublishers.ofString(body.toString()));
         return proceedFromBuilder(builder);
     }
-    public static HttpResponse<String> sendMessage(String model , String message , String masterPropmt){
+    public static HttpResponse<String> sendMessage(String model , String message , String masterPropmt, String reasoning){
+
         JSONObject body = new JSONObject();
         body.put("model", model);
         body.put("system_prompt", masterPropmt);
-        // body.put("type", "text");
+        body.put("system_prompt", masterPropmt);
+        if (reasoning != null) body.put("reasoning", reasoning); 
         body.put("input", message);
 
         HttpRequest.Builder builder = HttpRequest.newBuilder()
