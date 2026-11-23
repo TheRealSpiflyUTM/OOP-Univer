@@ -36,13 +36,17 @@ public class AI {
         return avaliableModels.getJSONObject(0).getString("key");
     }
 
-    static String getMessage(String body){
-        return new JSONObject(body).getJSONArray("output").getJSONObject(0).getString("content");
-
+    static String getMessage(String body) {
+        JSONArray out = new JSONObject(body).getJSONArray("output");
+        for (int i = 0; i < out.length(); i++) {
+            JSONObject item = out.getJSONObject(i);
+            if ("message".equals(item.optString("type"))) return item.getString("content");
+        }
+        return "";
     }
     static JSONArray getReasoningOptions(JSONObject model) {
         JSONObject caps = model.optJSONObject("capabilities");
-        
+
         if (caps == null) return null;
 
         JSONObject r = caps.optJSONObject("reasoning");

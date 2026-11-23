@@ -42,21 +42,24 @@ public class Agent {
         JSONArray avaliableModels = AI.getAvaliableModels(modelsResponse.body());
         AI.printAvaliableModels(avaliableModels);
 
-        reasoningArray = AI.getReasoningOptions(new JSONObject(modelsResponse.body()));
+        reasoningArray = AI.getReasoningOptions(avaliableModels.getJSONObject(0));
         model = AI.getModel(avaliableModels , log);
 
         if(model == null) {
             log.log(LogLevel.ERROR, "No models loaded");
             return ;
         }
+
+        if (reasoningArray != null && reasoningArray.length() > 0) {
+            reasoningLevel = reasoningArray.getString(0); // "off"
+        }
+        
+        Memory.setReasoning(reasoningLevel);
         Memory.setModel(model);
         System.out.println("--------------------------------------------------------------------------------------");
     }
 
     public void chat(){
-        if (reasoningArray != null && reasoningArray.length() > 0) {
-            reasoningLevel = reasoningArray.getString(0); // "off"
-        }
 
         Scanner in = new Scanner(System.in);
         String message = "s" ;

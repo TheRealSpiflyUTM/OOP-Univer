@@ -45,7 +45,6 @@ public class HttpConector{
         JSONObject body = new JSONObject();
         body.put("model", model);
         body.put("system_prompt", masterPropmt);
-        body.put("system_prompt", masterPropmt);
         if (reasoning != null) body.put("reasoning", reasoning); 
         body.put("input", message);
 

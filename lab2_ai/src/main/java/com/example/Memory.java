@@ -13,6 +13,7 @@ public class Memory {
     private StringBuilder resume = new StringBuilder("");
     private static Logger log = new Logger("Memory");
     private static String model;  
+    private static String reasoning;  
 
     public static final int TIER1_SIZE = 2;
     public static final int TIER2_SIZE = 4;
@@ -66,7 +67,13 @@ public class Memory {
     }
 
     public void createResume(){
-        HttpResponse<String> response = HttpConector.sendMessage(model ,"Resume: " + resume.toString() + "\n" + "New Memory: " + getMemoryString()  , resumePrompt );
+        HttpResponse<String> response = HttpConector.sendMessage(
+            model ,
+            "Resume: " + resume.toString() + "\n" 
+            + "New Memory: " + getMemoryString()  
+            , resumePrompt,
+            reasoning 
+        );
         resume = new StringBuilder(AI.getMessage(response.body()));
     }
     
@@ -77,5 +84,8 @@ public class Memory {
 
     public static void setModel(String tempModel){
         model = tempModel;
+    }
+    public static void setReasoning(String tempReasoning){
+        reasoning = tempReasoning;
     }
 }
