@@ -1,0 +1,1 @@
+Put this in terminal before execution of terminal commands: chcp 65001;
