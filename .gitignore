@@ -18,3 +18,28 @@ API_KEY.env
 # IntelliJ
 .idea/
 *.iml
+
+# Eclipse / NetBeans
+.factorypath
+bin/
+nbproject/
+
+# Maven leftovers
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+
+# Logs and temp files (*.conf is kept on purpose)
+*.log.*
+*.tmp
+*.bak
+*.swp
+hs_err_pid*
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude local settings
+.claude/settings.local.json
