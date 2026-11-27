@@ -13,6 +13,7 @@ import example.Logger.Configurator.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import example.Logger.Configurator.ConfigException;
 
 public class Logger {
 
@@ -43,26 +44,36 @@ public class Logger {
     }
 
     public static Logger initLoggerFromConfig(String name, Config config){
-        Logger.setLevel(LogLevel.valueOf(config.getOr("log.level", "INFO")));
+        // level: unknown value -> ConfigException
+        String levelStr = config.getOr("log.level", "INFO").trim().toUpperCase();
+        try {
+            Logger.setLevel(LogLevel.valueOf(levelStr));
+        } catch (IllegalArgumentException e) {
+            throw new ConfigException("Invalid log.level: '" + levelStr + "'");
+        }
+
+        // Choice for "file sink but no log.file": fall back to app.log (explain in report)
         String filePath = config.getOr("log.file", "app.log");
         List<Sink> sinks = new ArrayList<>();
 
-        for(String s : config.getOr("log.sinks", "console").split(",")){
-            switch (s.trim()){
+        for (String s : config.getOr("log.sinks", "console").split(",")) {
+            switch (s.trim()) {
                 case "console": sinks.add(new ConsoleSink()); break;
                 case "file":    sinks.add(new FileSink(filePath)); break;
-                default: throw new IllegalArgumentException("Unknown sink: " + s.trim());
+                default: throw new ConfigException("Unknown sink: '" + s.trim() + "'");
             }
         }
 
+        // format: only "pattern" or "json" allowed
+        String format = config.getOr("log.format", "pattern").trim();
         Formatter formatter;
-        if(config.getOr("log.format", "pattern").equals("json")){
-            formatter = new JsonFormatter();
-        }else{
-            formatter = new PatternFormatter(config.getOr("log.pattern", "[%l] %n:  %m"));
+        switch (format) {
+            case "json":    formatter = new JsonFormatter(); break;
+            case "pattern": formatter = new PatternFormatter(config.getOr("log.pattern", "[%l] %n:  %m")); break;
+            default: throw new ConfigException("Unknown log.format: '" + format + "'");
         }
 
-        return new Logger(name, formatter , new MultiSink(sinks));
+        return new Logger(name, formatter, new MultiSink(sinks));
 
     }
     
